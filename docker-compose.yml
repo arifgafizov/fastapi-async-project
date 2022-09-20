@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+  web:
+    image: 'lms-${IMAGE_TAG:-latest}'
+    build:
+      context: .
+      dockerfile: docker/server/Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ./src:/app
+    depends_on:
+      - db
+    ports:
+      - 8000:8000
+    networks:
+      - lms-network
+
+  db:
+    image: 'postgres:14.0-alpine'
+    restart: unless-stopped
+    env_file:
+      - ./docker/db/env.env
+    expose:
+      - 5432
+    networks:
+      - lms-network
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+
+networks:
+  lms-network:
+
+volumes:
+  postgres:
