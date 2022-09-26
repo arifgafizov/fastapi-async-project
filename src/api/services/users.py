@@ -1,14 +1,15 @@
 from datetime import datetime
 
 from fastapi import HTTPException, Depends
-from sqlalchemy import update, delete
+from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from fastapi.encoders import jsonable_encoder
 
+from api.services.auth import AuthService
 from db.models.users import User
 from db.setup import get_session
-from schemas.users import UserCreate, UserBase, User as SchUser
+from schemas.users import UserCreate, UserBase
 
 
 class UserService:
@@ -45,10 +46,10 @@ class UserService:
 
     async def create_user(self, user: UserCreate):
         await self.validate_user_email(user.email)
-        fake_hashed_password = user.password + "not_really_hashed"
+        AuthService.hash_password(user.password)
         new_user = User(email=user.email,
                         role=user.role,
-                        password_hash=fake_hashed_password,
+                        password_hash=AuthService.hash_password(user.password),
                         created_at=datetime.now(),
                         updated_at=datetime.now()
                         )
