@@ -46,7 +46,6 @@ class UserService:
 
     async def create_user(self, user: UserCreate):
         await self.validate_user_email(user.email)
-        AuthService.hash_password(user.password)
         new_user = User(email=user.email,
                         role=user.role,
                         password_hash=AuthService.hash_password(user.password),
