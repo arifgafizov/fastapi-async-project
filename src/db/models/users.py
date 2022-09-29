@@ -14,7 +14,7 @@ class User(TimeStamp, Base):
     role = Column(Enum(Role))
     password_hash = Column(Text)
 
-    profile = relationship('Profile', back_populates='owner', uselist=False)
+    profile = relationship('Profile', back_populates='owner', uselist=False, cascade="all,delete")
 
     def __repr__(self):
         return f'{self.id}-{self.email}'
