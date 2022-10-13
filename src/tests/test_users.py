@@ -1,7 +1,5 @@
 import pytest
 
-from api.services.users import UserService
-
 
 @pytest.fixture(scope="module")
 def user_data():
@@ -16,11 +14,6 @@ def user_data():
                 "is_active": True
             }
     }
-
-
-@pytest.fixture(scope="module")
-def service():
-    return UserService
 
 
 @pytest.mark.anyio
