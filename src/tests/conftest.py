@@ -2,10 +2,14 @@ import anyio
 import pytest
 from httpx import AsyncClient
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from databases import Database
 
+from api.services.auth import AuthService
+from db.models.enums import Role
+from db.models.users import User, users, profiles
 from db.setup import get_session, Base
 from main import app
 from core.settings import settings
@@ -26,13 +30,31 @@ def anyio_backend():
     return 'asyncio'
 
 
-# auto clean up database before tests
+init_user = {
+    "email": "test@example.com",
+    "role": Role.teacher,
+    "password_hash": AuthService.hash_password('supertest'),
+}
+
+init_profile = {
+    "first_name": "test_name",
+    "last_name": "test_surname",
+    "bio": None,
+    "is_active": True,
+}
+
+
+# auto clean up database before tests and add init user
 async def init_db():
     async with a_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
     async with a_engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-
+        await conn.execute(users.insert(), [init_user])
+    async with a_engine.connect() as conn:
+        result = await conn.execute(select(User).where(User.email == "test@example.com"))
+        user = result.fetchone()
+        await conn.execute(profiles.insert(), [{**init_profile, "users_id": user.id}])
 
 # run asynchronous function init_db
 anyio.run(init_db)
