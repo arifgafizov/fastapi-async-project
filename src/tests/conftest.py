@@ -1,11 +1,14 @@
 import anyio
 import pytest
+from httpx import AsyncClient
+
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from databases import Database
 
 from db.setup import get_session, Base
 from main import app
+from core.settings import settings
 
 
 # test async db and url
@@ -43,3 +46,10 @@ async def get_test_session() -> Session:
 
 # overriding test db session for test app
 app.dependency_overrides[get_session] = get_test_session
+
+
+# async client for tests
+@pytest.fixture
+async def app_client():
+    async with AsyncClient(app=app, base_url=f"http://{settings.server_host}:{settings.server_port}") as client:
+        yield client
