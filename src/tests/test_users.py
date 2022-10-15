@@ -46,3 +46,29 @@ async def test_retrieve_user(app_client, auth_header, request):
     response_data = response.json()
     assert response.status_code == 200
     assert response_data
+
+
+@pytest.mark.anyio
+async def test_update_user(app_client, auth_header, request, user_data):
+    user_data.update(
+        {
+            "email": "Changed@example.com",
+            "role": 1,
+            "profile": {
+                "first_name": "Changed",
+                "last_name": "Changed",
+                "bio": "Changed",
+                "is_active": False
+            }
+        }
+    )
+    user_id = request.config.cache.get('user_id', None)
+    response = await app_client.put(f"/users/{user_id}", headers=auth_header, json=user_data)
+    response_data = response.json()
+    assert response.status_code == 200
+    assert response_data["email"] == "Changed@example.com"
+    assert response_data["role"] == 1
+    assert response_data["profile"]["first_name"] == "Changed"
+    assert response_data["profile"]["last_name"] == "Changed"
+    assert response_data["profile"]["bio"] == "Changed"
+    assert not response_data["profile"]["is_active"]
