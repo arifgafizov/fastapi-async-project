@@ -1,11 +1,6 @@
 import pytest
 
 
-@pytest.fixture(scope='module')
-def credentials():
-    return {"email": "test@example.com", "password": "supertest"}
-
-
 @pytest.mark.anyio
 async def test_login(app_client, credentials):
     response = await app_client.post("/login", json=credentials)

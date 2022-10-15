@@ -75,3 +75,15 @@ app.dependency_overrides[get_session] = get_test_session
 async def app_client():
     async with AsyncClient(app=app, base_url=f"http://{settings.server_host}:{settings.server_port}") as client:
         yield client
+
+
+@pytest.fixture
+def credentials():
+    return {"email": "test@example.com", "password": "supertest"}
+
+
+@pytest.fixture
+async def auth_header(app_client, credentials):
+    response = await app_client.post("/login", json=credentials)
+    access_token = response.json()['access_token']
+    return {'Authorization': f'Bearer {access_token}'}
