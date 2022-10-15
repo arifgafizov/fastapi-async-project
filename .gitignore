@@ -266,3 +266,4 @@ dist
 /frontend/.vscode/
 /frontend/node_modules/
 !frontend/*
+*.db
