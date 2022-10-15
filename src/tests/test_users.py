@@ -72,3 +72,12 @@ async def test_update_user(app_client, auth_header, request, user_data):
     assert response_data["profile"]["last_name"] == "Changed"
     assert response_data["profile"]["bio"] == "Changed"
     assert not response_data["profile"]["is_active"]
+
+
+@pytest.mark.anyio
+async def test_delete_user(app_client, auth_header, request):
+    user_id = request.config.cache.get('user_id', None)
+    response = await app_client.delete(f"/users/{user_id}", headers=auth_header)
+    assert response.status_code == 204
+    response = await app_client.get(f"/users/{user_id}", headers=auth_header)
+    assert response.status_code == 404
