@@ -35,13 +35,31 @@ class User(UserBase):
         orm_mode = True
 
 
-class ProfileOut(ProfileCreate):
+class ProfileOut(BaseModel):
     id: int
+    first_name: str
+    last_name: str
+    bio: Optional[str]
+    is_active: bool
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 
+    class Config:
+        orm_mode = True
 
-class UserOut(User):
+
+class UserBaseOut(BaseModel):
+    id: int
+    email: EmailStr
+    role: Role
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
+
+    class Config:
+        orm_mode = True
+
+
+class UserOut(UserBaseOut):
     profile: ProfileOut = None
 
 
