@@ -13,9 +13,9 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-COPY src/requirements.txt /app/requirements.txt
+COPY src/requirements /app/requirements
 
-RUN pip install -r requirements.txt --no-cache-dir
+RUN pip install -r requirements/local.txt --no-cache-dir
 
 COPY ./src /app
 
