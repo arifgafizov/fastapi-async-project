@@ -17,7 +17,7 @@ class Section(TimeStamp, Base):
     course_id = Column(Integer, ForeignKey('courses.id'), nullable=False)
 
     course = relationship('Course', back_populates='sections')
-    content_blocks = relationship('ContentBlock', back_populates='section')
+    content_blocks = relationship('ContentBlock', back_populates='sections')
 
 
 class ContentBlock(TimeStamp, Base):
@@ -31,7 +31,7 @@ class ContentBlock(TimeStamp, Base):
     content = Column(Text, nullable=True)
     section_id = Column(Integer, ForeignKey('sections.id'), nullable=False)
     sections = relationship('Section', back_populates='content_blocks')
-    completed_content_blocks = relationship('CompletedContentBlock', back_populates='content_blocks')
+    completed_content_blocks = relationship('CompletedContentBlock', back_populates='content_block')
 
 
 class CompletedContentBlock(TimeStamp, Base):
