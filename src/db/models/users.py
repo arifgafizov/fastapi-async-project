@@ -15,6 +15,8 @@ class User(TimeStamp, Base):
     password_hash = Column(Text)
 
     profile = relationship('Profile', back_populates='owner', uselist=False, cascade="all,delete")
+    student_courses = relationship('StudentCourse', back_populates='student')
+    student_content_blocks = relationship('CompletedContentBlock', back_populates='student')
 
     def __repr__(self):
         return f'{self.id}-{self.email}'
