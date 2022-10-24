@@ -12,9 +12,7 @@ class Course(TimeStamp, Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(200), nullable=False)
     description = Column(Text, nullable=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
 
-    created_by = relationship(User)
     sections = relationship('Section', back_populates='course', uselist=False)
     student_courses = relationship('StudentCourse', back_populates='course')
 
