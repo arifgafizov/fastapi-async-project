@@ -1,28 +1,42 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, Path
 
-router = APIRouter(tags=['courses'],)
+from api.services.auth import get_current_user
+from api.services.courses import CourseService
+from schemas.courses import CourseOut, CourseCreate
 
-
-@router.get('/courses')
-async def read_courses():
-    return {'courses': []}
-
-
-@router.post('/courses')
-async def create_course():
-    return {'courses': []}
+router = APIRouter(tags=['courses'], dependencies=[Depends(get_current_user)])
 
 
-@router.get('/courses/{id}')
-async def read_course():
-    return {'courses': []}
+@router.get('/courses', response_model=list[CourseOut])
+async def list_courses(service: CourseService = Depends()):
+    return await service.get_all_courses()
 
 
-@router.put('/courses/{id}')
-async def update_course():
-    return {'courses': []}
+@router.post('/courses', response_model=CourseOut, status_code=201)
+async def create_new_course(course: CourseCreate, service: CourseService = Depends()):
+    return await service.create_course(course)
 
 
-@router.delete('/courses/{id}')
-async def delete_course():
-    return {'courses': []}
+@router.get('/courses/{id}', response_model=CourseOut)
+async def retrieve_course(
+        id: int = Path(..., description='The ID of the course', gt=0),
+        service: CourseService = Depends()
+):
+    return await service.get_course(course_id=id)
+
+
+@router.put('/courses/{id}', response_model=CourseOut)
+async def update_course(
+        course_data: CourseCreate,
+        id: int = Path(..., description='The ID of the user', gt=0),
+        service: CourseService = Depends(),
+):
+    return await service.update_course(course_id=id, course=course_data)
+
+
+@router.delete('/courses/{id}', status_code=204)
+async def destroy_course(
+        id: int = Path(..., description='The ID of the user', gt=0),
+        service: CourseService = Depends(),
+):
+    return await service.delete_course(id)
