@@ -35,7 +35,6 @@ class CourseService:
         new_course = Course(
             title=course.title,
             description=course.description,
-            user_id=course.user_id
             )
         self.db.add(new_course)
         await self.db.flush()
@@ -47,8 +46,6 @@ class CourseService:
         q_course = update(Course).where(Course.id == course_id)
         q_course = q_course.values(title=course.title)
         q_course = q_course.values(description=course.description)
-        q_course = q_course.values(user_id=course.user_id)
-        q_course.execution_options(synchronize_session="fetch")
 
         await self.db.execute(q_course)
         await self.db.flush()
