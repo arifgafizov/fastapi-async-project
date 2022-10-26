@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends, Path
 
 from api.services.auth import get_current_user
 from api.services.courses import CourseService
-from schemas.courses import CourseOut, CourseCreate
+from schemas.courses import CourseOut, CourseCreate, CourseUsersOut, CourseStudent
 
 router = APIRouter(tags=['courses'], dependencies=[Depends(get_current_user)])
 
 
-@router.get('/courses', response_model=list[CourseOut])
+@router.get('/courses', response_model=list[CourseUsersOut])
 async def list_courses(service: CourseService = Depends()):
     return await service.get_all_courses()
 
@@ -17,7 +17,7 @@ async def create_new_course(course: CourseCreate, service: CourseService = Depen
     return await service.create_course(course)
 
 
-@router.get('/courses/{id}', response_model=CourseOut)
+@router.get('/courses/{id}', response_model=CourseUsersOut)
 async def retrieve_course(
         id: int = Path(..., description='The ID of the course', gt=0),
         service: CourseService = Depends()
@@ -40,3 +40,9 @@ async def destroy_course(
         service: CourseService = Depends(),
 ):
     return await service.delete_course(id)
+
+
+@router.post('/courses/add/student')
+async def add_student_to_the_course(data: CourseStudent, service: CourseService = Depends()):
+    await service.add_user_to_course(data)
+    return 'Ok'

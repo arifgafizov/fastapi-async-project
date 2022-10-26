@@ -2,11 +2,12 @@ from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import update
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import selectinload
 
 from db.models.courses import Course
+from db.models.users import User
 from db.setup import get_session
-from schemas.courses import CourseCreate
+from schemas.courses import CourseCreate, CourseStudent
 
 
 class CourseService:
@@ -23,7 +24,7 @@ class CourseService:
         return result.scalar_one_or_none()
 
     async def get_all_courses(self):
-        result = await self.db.execute(select(Course).order_by(Course.id))
+        result = await self.db.execute(select(Course).order_by(Course.id).options(selectinload(Course.students)))
         return result.scalars().all()
 
     async def get_course(self, course_id: int):
@@ -55,3 +56,12 @@ class CourseService:
         course = await self._get(course_id)
         self.validate_course(course)
         return await self.db.delete(course)
+
+    async def add_user_to_course(self, data: CourseStudent):
+        course = await self._get(data.course_id)
+        user = await self.db.execute(select(User).where(User.id == data.student_id))
+        user = user.scalar_one_or_none()
+        course.students.append(user)
+        self.db.add(course)
+        await self.db.commit()
+        await self.db.refresh(course)

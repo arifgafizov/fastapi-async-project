@@ -1,6 +1,8 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+from schemas.users import UserBaseOut
 
 
 class CourseBase(BaseModel):
@@ -19,3 +21,12 @@ class CourseOut(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class CourseUsersOut(CourseOut):
+    students: list[UserBaseOut] = []
+
+
+class CourseStudent(BaseModel):
+    course_id: int = Field(gt=0)
+    student_id: int = Field(gt=0)
