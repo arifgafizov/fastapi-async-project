@@ -1,11 +1,14 @@
-def changeCount = 0
+def changeBuildCount = 0
 
 pipeline {
     agent any
     stages {
         stage('Master Branch') {
             when {
-                branch 'master'
+                allOf {
+                    branch 'master'
+                    changeBuildCount > 0
+                }
             }
             steps {
                 sh """
@@ -13,17 +16,20 @@ pipeline {
                 """
 
                 script {
-                    changeCount = currentBuild.changeSets.size()
+                    changeBuildCount = currentBuild.changeSets.size()
                 }
                 sh """
-                echo "${changeCount} commit(s) since last build."
+                echo "${changeBuildCount} commit(s) since last build. Changed"
                 """
             }
         }
 
         stage('Develop Branch TEST') {
             when {
-                branch 'dev'
+                allOf {
+                    branch 'dev'
+                    changeBuildCount > 0
+                }
             }
             steps {
                 sh """
@@ -31,11 +37,11 @@ pipeline {
 
                 """
                 script {
-                    changeCount = currentBuild.changeSets.size()
+                    changeBuildCount = currentBuild.changeSets.size()
                 }
 
                 sh """
-                echo "${changeCount} commit(s) since last build."
+                echo "${changeBuildCount} commit(s) since last build. Changed"
                 """
             }
            }
