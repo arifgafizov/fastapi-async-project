@@ -4,50 +4,45 @@ pipeline {
     agent any
     stages {
         stage('Master Branch') {
-            when {
-                allOf {
-                    branch 'master'
-                    expression {
-                        changeBuildCount > 0
-                    }
-                }
-            }
+            when {branch 'master'}
             steps {
                 sh """
-                echo "Building Artifact from TEST"
+                echo "Building Artifact from Master branch"
                 """
 
                 script {
                     changeBuildCount = currentBuild.changeSets.size()
                 }
+
+                when {
+                    expression { changeBuildCount > 0 }
+                }
+
                 sh """
-                echo "${changeBuildCount} commit(s) since last build. Changed"
+                echo "${changeBuildCount} commit(s) since last build. Changed Master"
                 """
             }
         }
 
         stage('Develop Branch TEST') {
-            when {
-                allOf {
-                    branch 'dev'
-                    expression {
-                        changeBuildCount > 0
-                    }
-                }
-            }
+            when {branch 'dev'}
             steps {
                 sh """
                 echo "Building Artifact from Dev branch"
-
                 """
+
                 script {
                     changeBuildCount = currentBuild.changeSets.size()
                 }
 
+                when {
+                    expression { changeBuildCount > 0 }
+                }
+
                 sh """
-                echo "${changeBuildCount} commit(s) since last build. Changed"
+                echo "${changeBuildCount} commit(s) since last build. Changed Dev"
                 """
             }
-           }
         }
+    }
 }
