@@ -7,7 +7,9 @@ pipeline {
             when {
                 allOf {
                     branch 'master'
-                    changeBuildCount > 0
+                    expression {
+                        changeBuildCount > 0
+                    }
                 }
             }
             steps {
@@ -28,7 +30,9 @@ pipeline {
             when {
                 allOf {
                     branch 'dev'
-                    changeBuildCount > 0
+                    expression {
+                        changeBuildCount > 0
+                    }
                 }
             }
             steps {
