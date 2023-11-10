@@ -13,8 +13,9 @@ pipeline {
                 script {
                     changeCount = currentBuild.changeSets.size()
                 }
-
-                echo "${changeCount} commit(s) since last buid."
+                sh """
+                echo "${changeCount} commit(s) since last build."
+                """
             }
         }
 
@@ -32,7 +33,9 @@ pipeline {
                     changeCount = currentBuild.changeSets.size()
                 }
 
-                echo "${changeCount} commit(s) since last buid."
+                sh """
+                echo "${changeCount} commit(s) since last build."
+                """
             }
            }
         }
