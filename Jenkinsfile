@@ -28,6 +28,7 @@ pipeline {
 
                 """
                 script {
+                    def changeCount = 0
                     changeCount = currentBuild.changeSets.size()
                 }
 
