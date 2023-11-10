@@ -1,3 +1,5 @@
+def changeCount = 0
+
 pipeline {
     agent any
     stages {
@@ -29,7 +31,6 @@ pipeline {
 
                 """
                 script {
-                    def changeCount = 0
                     changeCount = currentBuild.changeSets.size()
                 }
 
