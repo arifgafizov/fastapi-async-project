@@ -23,7 +23,7 @@ pipeline {
             }
         }
 
-        stage('Develop Branch TEST') {
+        stage('Develop Branch') {
             when {branch 'dev'}
             steps {
                 sh """
@@ -40,6 +40,19 @@ pipeline {
                         """
                     }
                 }
+            }
+        }
+
+        stage('Feature/jenkins Branch') {
+            when {branch 'feature/jenkins'}
+            steps {
+                sh """
+                echo "Building Artifact from Feature/jenkins branch"
+                """
+
+                sh """
+                echo "Start CI/CD in Feature/jenkins branch."
+                """
             }
         }
 
