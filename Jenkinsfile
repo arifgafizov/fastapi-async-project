@@ -12,14 +12,11 @@ pipeline {
 
                 script {
                     changeBuildCount = currentBuild.changeSets.size()
-                }
-
-                when {
-                    expression { changeBuildCount > 0 }
-                }
-                steps {
                     sh """
-                    echo "${changeBuildCount} commit(s) since last build. Changed Master"
+                    if changeBuildCount > 0
+                    then
+                        echo "${changeBuildCount} commit(s) since last build. Changed Master"
+                    fi
                     """
                 }
             }
@@ -34,17 +31,15 @@ pipeline {
 
                 script {
                     changeBuildCount = currentBuild.changeSets.size()
-                }
-
-                when {
-                    expression { changeBuildCount > 0 }
-                }
-                steps {
                     sh """
-                    echo "${changeBuildCount} commit(s) since last build. Changed Dev"
+                    if changeBuildCount > 0
+                    then
+                        echo "${changeBuildCount} commit(s) since last build. Changed Dev"
+                    fi
                     """
                 }
             }
         }
+
     }
 }
