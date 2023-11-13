@@ -4,8 +4,10 @@ pipeline {
     agent any
     stages {
         stage('Set Change Build') {
-            script {
-                changeBuildCount = currentBuild.changeSets.size()
+            steps {
+                script {
+                    changeBuildCount = currentBuild.changeSets.size()
+                }
             }
         }
         stage('Master Branch') {
