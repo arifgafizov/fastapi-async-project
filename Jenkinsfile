@@ -12,12 +12,13 @@ pipeline {
 
                 script {
                     changeBuildCount = currentBuild.changeSets.size()
-                    sh """
-                    if changeBuildCount > 0
-                    then
-                        echo "${changeBuildCount} commit(s) since last build. Changed Master"
-                    fi
-                    """
+                    if (changeBuildCount > 0) {
+                        echo "${changeBuildCount} commit(s) since last build. Changed Master !!!"
+
+                        sh """
+                        echo "Start CI/CD in Master branch"
+                        """
+                    }
                 }
             }
         }
@@ -33,13 +34,11 @@ pipeline {
                     changeBuildCount = currentBuild.changeSets.size()
                     if (changeBuildCount > 0) {
                         echo "${changeBuildCount} commit(s) since last build. Changed Dev !!!"
+
+                        sh """
+                        echo "Start CI/CD in Dev branch"
+                        """
                     }
-                    sh """
-                    if changeBuildCount > 0
-                    then
-                        echo "${changeBuildCount} commit(s) since last build. Changed Dev"
-                    fi
-                    """
                 }
             }
         }
