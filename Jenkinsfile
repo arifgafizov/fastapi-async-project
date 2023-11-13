@@ -16,14 +16,14 @@ pipeline {
                         echo "${changeBuildCount} commit(s) since last build. Changed Master !!!"
 
                         sh """
-                        echo "Start CI/CD in Master branch"
+                        echo "Start CI/CD in Master branch."
                         """
                     }
                 }
             }
         }
 
-        stage('Develop Branch TEST') {
+        stage('Develop Branch') {
             when {branch 'dev'}
             steps {
                 sh """
@@ -36,10 +36,23 @@ pipeline {
                         echo "${changeBuildCount} commit(s) since last build. Changed Dev !!!"
 
                         sh """
-                        echo "Start CI/CD in Dev branch"
+                        echo "Start CI/CD in Dev branch."
                         """
                     }
                 }
+            }
+        }
+
+        stage('Feature/jenkins Branch') {
+            when {branch 'feature/jenkins'}
+            steps {
+                sh """
+                echo "Building Artifact from Feature/jenkins branch"
+                """
+
+                sh """
+                echo "Start CI/CD in Feature/jenkins branch."
+                """
             }
         }
 
