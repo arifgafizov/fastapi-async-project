@@ -31,6 +31,9 @@ pipeline {
 
                 script {
                     changeBuildCount = currentBuild.changeSets.size()
+                    if (changeBuildCount > 0) {
+                        echo "${changeBuildCount} commit(s) since last build. Changed Dev !!!"
+                    }
                     sh """
                     if changeBuildCount > 0
                     then
